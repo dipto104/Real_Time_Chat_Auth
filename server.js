@@ -2,6 +2,7 @@ var express = require('express');
 var expressLayouts= require('express-ejs-layouts');
 var flash=require('connect-flash');
 var session=require('express-session');
+const passport=require('passport');
 
 var app = express();
 var server = require('http').createServer(app);
@@ -9,7 +10,8 @@ var server = require('http').createServer(app);
 
 
 
-
+//passport config
+require('./config/passport')(passport);
 
 //EJS
 
@@ -24,7 +26,12 @@ app.use(session({
   secret: 'secret_dipto',
   resave: true,
   saveUninitialized: true
-}))
+}));
+
+//passport middleware
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //connect flash
 app.use(flash());
@@ -33,6 +40,7 @@ app.use(flash());
 app.use((req,res,next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
     next();
 });
 
