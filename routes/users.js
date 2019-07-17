@@ -1,5 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+
+var sql=require('../config/configdb');
+
+
+
+
+
 //login page
 router.get('/login',(req,res)=>res.render('login'));
 
@@ -31,10 +39,37 @@ router.post('/register',(req,res)=>{
             password,
             password2
         });
-    }else{
-        res.send("pass");
+    }else{ 
+        const request = new sql.Request();
+        request.input('input_name', sql.NVarChar, name);
+
+        //hasing is done here
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password, salt, (err, hash) => {
+              if (err) throw err;
+              request.input('input_password', sql.NVarChar, hash);
+              console.log(hash);
+            });
+        });
+        
+        
+        // query to the database and save the records
+        request.query("insert into tbl_registration (Username,Password) values (@input_name,@input_password)", (err, result) => {
+            if(err){
+                errors.push({msg:"User ID allready registered"});
+                res.render('register',{
+                    errors,
+                    name,
+                    password,
+                    password2
+                });
+              }
+            else{
+                req.flash('success_msg','You are now registered and can log in');
+                res.redirect('/users/login');
+            } 
+        });
     }
     console.log(name);
-    res.send("hello")
 });
 module.exports=router;

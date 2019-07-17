@@ -1,0 +1,19 @@
+CREATE TABLE [dbo].[tbl_registration] (
+ 
+   
+    [Username]    NVARCHAR (100) NOT NULL,
+ 
+    [Password] NVARCHAR (MAX) NOT NULL,
+ 
+  
+ 
+    CONSTRAINT [PK_tbl_registration] PRIMARY KEY CLUSTERED ([Username])
+ 
+);
+
+
+
+INSERT INTO tbl_registration (Username,Password)
+VALUES ('hasin','12345');
+
+select * from tbl_registration;

@@ -1,28 +1,15 @@
 var express = require('express');
 var expressLayouts= require('express-ejs-layouts');
-var sql = require("mssql");
+var flash=require('connect-flash');
+var session=require('express-session');
 
 var app = express();
 var server = require('http').createServer(app);
 
 
-//SQL server config
-var config = {
-    user: 'sa',
-    password: '12345',
-    server: 'DESKTOP-AEA02TQ', 
-    database: 'Testdb' 
-};
-// connect to your database
-sql.connect(config, function (err) {
-    
-  if (err) {
-      console.log(err);
-  }else{
-      console.log("sql server connected");
-  }
 
-});
+
+
 
 //EJS
 
@@ -31,6 +18,23 @@ app.set('view engine','ejs')
 
 //body parser
 app.use(express.urlencoded({ extended:true }));
+
+//Express Session
+app.use(session({
+  secret: 'secret_dipto',
+  resave: true,
+  saveUninitialized: true
+}))
+
+//connect flash
+app.use(flash());
+
+//Globals var
+app.use((req,res,next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    next();
+});
 
 //routes
 app.use('/',require('./routes/index'));
