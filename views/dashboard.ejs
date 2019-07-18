@@ -1,3 +1,59 @@
-<h1 class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome <%= name %> </p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<style>
+    #messagearea{
+        
+        border-style: solid;
+        border-width: 5px;
+        
+    }
+    #chat{
+        overflow-y: auto;
+        height: 400px;
+    }
+    a:link{
+        text-decoration: none;
+    }
+    a:hover{
+         color: yellow;
+         text-decoration: none;
+          }
+    a:visited 
+    { 	color: blue;
+        text-decoration: none;
+    }
+    
+    a:active { 
+        color: aqua;
+        text-decoration: none;
+    }			
+</style>
+<div id="messagearea" class="row">
+    <div class="col-sm-3 col-md-4">
+        <div class="card card-body bg-light">
+            <h3>Online Users</h3>
+            <ul class="list-group" id="users"></ul>
+        </div>
+        
+    </div>
+    <div class="col-sm-3 col-md-6">
+        <div class="chat" id="chat"></div>
+
+        <form id="messageForm">
+            <div class="form-group">
+                <label>Enter Message</label>
+                <textarea class="form-control" id="message">
+                </textarea>
+                </br>
+                <input type="submit" class="btn btn-primary" value="Send Message" />
+            </div>
+        </form>
+            
+    </div>
+    <div class="col-md-2">
+        
+            <h6 id="userid"></h6>
+            <p class="lead mb-3">Welcome <%= name %> </p>
+            <a href="/users/logout" class="btn btn-primary">Logout</a>
+            
+        </div>
+        
+</div>

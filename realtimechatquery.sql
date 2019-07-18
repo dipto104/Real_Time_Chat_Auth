@@ -17,3 +17,5 @@ INSERT INTO tbl_registration (Username,Password)
 VALUES ('hasin','12345');
 
 select * from tbl_registration;
+
+select * from tbl_registration where Username='boss';
