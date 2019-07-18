@@ -91,11 +91,17 @@ io.sockets.on('connection',function(socket){
 
 	//new user
 	socket.on('new user',function(data,callback){
-		callback(true);
-		socket.username=data;
-		socket.join(socket.username);
-		users.push(socket.username);
-		Updateusername();
+    callback(true);
+    var indexuser=users.indexOf(data);
+    if(indexuser==-1){
+      socket.username=data;
+      socket.join(socket.username);
+      users.push(socket.username);
+    }
+    Updateusername();
+		
+		
+		
 	});
 
 	function Updateusername(){
