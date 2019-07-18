@@ -10,7 +10,14 @@ var sql=require('../config/configdb');
 
 
 //login page
-router.get('/login',(req,res)=>res.render('login'));
+router.get('/login',(req,res)=>{
+    if(req.isAuthenticated()){
+        res.redirect('/dashboard');
+    }else{
+        res.render('login');
+    }
+    
+});
 
 //register page
 router.get('/register',(req,res)=>res.render('register'));

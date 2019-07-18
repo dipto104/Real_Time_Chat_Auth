@@ -50,10 +50,85 @@
     </div>
     <div class="col-md-2">
         
-            <h6 id="userid"></h6>
-            <p class="lead mb-3">Welcome <%= name %> </p>
+            <h6 class="lead mb-3" id="userid"><%= name %></h6>
             <a href="/users/logout" class="btn btn-primary">Logout</a>
             
         </div>
         
 </div>
+
+
+<script>
+    
+    $(function () {
+			var socket =io.connect();
+			var $messageForm=$('#messageForm');
+			var $message = $('#message');
+			var $chat = $('#chat');
+			var $users =$('#users');
+			var $messagearea=$('#messagearea');
+			var currentuser='';
+			var $userid=$('#userid');
+
+            var chatusername='';
+            chatusername=$userid.text();
+
+            console.log($userid.text());
+            socket.emit('new user', $userid.text(),function(data){
+					if(data){
+						$messagearea.show();
+					}
+				});
+
+			$messageForm.submit(function(e){
+				e.preventDefault();
+
+				var msg=$message.val();
+				var touser=currentuser;
+				var dataoutput=[{"tuname":touser,"msg":msg}] ;
+
+				if($message.val()!=''){
+					socket.emit('send message', dataoutput);
+				}
+				$message.val('');
+			});
+			socket.on('new message',function(data){
+				var tempdata=JSON.parse(JSON.stringify(data));
+				if(tempdata[0].uname==chatusername){
+					$chat.append('<div class="card card-body bg-light" align="right">'+'You : '+tempdata[0].msg+'<div>');
+				}
+				else{
+					$chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
+				}
+				
+			});
+
+			socket.on('get users',function(data){
+				var html='';
+				for(var i=0;i<data.length;i++){
+					html+='<li class="list-group-item" id="'+i+'"><a href="#">'+data[i]+'</a></li>';
+				}
+				//console.log(data);
+				$users.html(html);
+			});
+
+			/*$($users).click(function(e) 
+			{ 
+			//alert($(this).find("li.i").text());
+			console.log($(this).text());
+			console.log($(this).id);
+			});*/
+
+			$users.on("click",".list-group-item",function(e){
+				//console.log($(this).text());
+				//console.log(e.target.id);
+
+				currentuser=$(this).text();
+				console.log(currentuser);
+			});
+			
+
+			
+
+		});
+</script>
