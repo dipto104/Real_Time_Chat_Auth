@@ -67,7 +67,7 @@
 			var $chat = $('#chat');
 			var $users =$('#users');
 			var $messagearea=$('#messagearea');
-			var currentuser='';
+			var touserid='';
 			var $userid=$('#userid');
 
             var chatusername='';
@@ -84,13 +84,27 @@
 				e.preventDefault();
 
 				var msg=$message.val();
-				var touser=currentuser;
-				var dataoutput=[{"tuname":touser,"msg":msg}] ;
+				var touser=touserid;
+				var messageid=chatusername+"_"+touserid;
+				var dataoutput=[{"MessageID":messageid,"FromID":chatusername,"ToID":touser,"msg":msg}];
 
 				if($message.val()!=''){
 					socket.emit('send message', dataoutput);
 				}
 				$message.val('');
+
+				
+					
+				$.ajax({
+					type: 'POST',
+					data: {'data':dataoutput},
+					ContentType: 'application/json',
+					url: 'http://localhost:3000/message',						
+					success: function(data) {
+						console.log('success on post');
+						console.log(JSON.stringify(data));
+					}
+				});
 			});
 			socket.on('new message',function(data){
 				var tempdata=JSON.parse(JSON.stringify(data));
@@ -99,8 +113,7 @@
 				}
 				else{
 					$chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
-				}
-				
+				}				
 			});
 
 			socket.on('get users',function(data){
@@ -120,11 +133,26 @@
 			});*/
 
 			$users.on("click",".list-group-item",function(e){
+				e.preventDefault();
 				//console.log($(this).text());
 				//console.log(e.target.id);
 
-				currentuser=$(this).text();
-				console.log(currentuser);
+				touserid=$(this).text();
+				console.log(touserid);
+
+				var messageid=chatusername+"_"+touserid;
+				var sendjson=[{"MessageID":messageid,"FromID":chatusername,"ToID":touserid}];
+
+				$.ajax({
+					type: 'POST',
+					data:{'data':sendjson},
+					ContentType: 'application/json',
+					url: 'http://localhost:3000/sendmessage',						
+					success: function(data) {
+						console.log('success on get');
+						console.log(JSON.stringify(data));
+					}
+				});
 			});
 			
 

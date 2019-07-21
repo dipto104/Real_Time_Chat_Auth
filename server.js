@@ -83,7 +83,7 @@ io.sockets.on('connection',function(socket){
 		var uname=socket.username;
 		var dataoutput=[{"uname":uname,"msg":msg}] ;
 
-		io.to(tempdata[0].tuname).emit('new message',dataoutput);
+		io.to(tempdata[0].ToID).emit('new message',dataoutput);
 		io.to(uname).emit('new message',dataoutput);
 		
 		//io.sockets.emit('new message',dataoutput);//prev working emit
