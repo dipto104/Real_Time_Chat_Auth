@@ -42,17 +42,18 @@ router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
 
     var messagedata=req.body.data;
-    console.log(messagedata[0].MessageID);
+    console.log(messagedata[0].MessageID1);
 
 
 
     const request = new sql.Request();
-    request.input('input_messageid', sql.NVarChar, messagedata[0].MessageID);
+    request.input('input_messageid1', sql.NVarChar, messagedata[0].MessageID1);
+    request.input('input_messageid2', sql.NVarChar, messagedata[0].MessageID2);
     request.input('input_fromid', sql.NVarChar, messagedata[0].FromID);
     request.input('input_toid', sql.NVarChar, messagedata[0].ToID);
  
         // query to the database and save the message
-        request.query("select * from tbl_message2 where MessageID = @input_messageid", (err, result) => {
+        request.query("select * from tbl_message2 where MessageID = @input_messageid1 or MessageID = @input_messageid2", (err, result) => {
             if(err){
                 console.log(err);
                 

@@ -18,4 +18,6 @@ VALUES ('hasin','12345');
 
 select * from tbl_registration;
 
+select * from tbl_message2;
+
 select * from tbl_registration where Username='boss';

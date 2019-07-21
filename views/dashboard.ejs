@@ -106,6 +106,8 @@
 					}
 				});
 			});
+
+
 			socket.on('new message',function(data){
 				var tempdata=JSON.parse(JSON.stringify(data));
 				if(tempdata[0].uname==chatusername){
@@ -140,8 +142,10 @@
 				touserid=$(this).text();
 				console.log(touserid);
 
-				var messageid=chatusername+"_"+touserid;
-				var sendjson=[{"MessageID":messageid,"FromID":chatusername,"ToID":touserid}];
+				var messageid1=chatusername+"_"+touserid;
+				var messageid2=touserid+"_"+chatusername;
+				var sendjson=[{"MessageID1":messageid1,"MessageID2":messageid2,"FromID":chatusername,"ToID":touserid}];
+				var messagehistory="";
 
 				$.ajax({
 					type: 'POST',
@@ -151,8 +155,24 @@
 					success: function(data) {
 						console.log('success on get');
 						console.log(JSON.stringify(data));
+						messagehistory=data;
+						console.log(messagehistory.length);
+						var html='';
+						$chat.empty();
+						for(var i=0;i<messagehistory.length;i++){
+							if(messagehistory[i].FromID==chatusername && messagehistory[i].ToID==touserid){
+								$chat.append('<div class="card card-body bg-light" align="right">'+'You : '+messagehistory[i].Message+'<div>');
+							}
+							else if(messagehistory[i].FromID==touserid && messagehistory[i].ToID==chatusername){
+								$chat.append('<div class="card card-body " align="left">'+messagehistory[i].FromID+' : '+messagehistory[i].Message+'<div>');
+							}
+						}
+						
 					}
 				});
+
+				
+				
 			});
 			
 
