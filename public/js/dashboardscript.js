@@ -22,8 +22,8 @@ $(function () {
     // send message using submit button
     $messageForm.submit(function(e){
         e.preventDefault();
-
-        if(touserid!=''&& chatusername!=touserid){
+        var testifspace=$message.val();
+        if(touserid!=''&& chatusername!=touserid && testifspace.replace(/\s/g, '').length){
             var msg=$message.val();
             var touser=touserid;
             var messageid=chatusername+"_"+touserid;
@@ -56,8 +56,8 @@ $(function () {
     ///instead of submit button using enter to send message
     $message.keypress(function (e) {
         if(e.which == 13) {
-            //submit form via ajax, this is not JS but server side scripting so not showing here
-            if(touserid!=''&& chatusername!=touserid){
+                var testifspace=$message.val();
+            if(touserid!=''&& chatusername!=touserid && testifspace.replace(/\s/g, '').length){
                 var msg=$message.val();
                 var touser=touserid;
                 var messageid=chatusername+"_"+touserid;
