@@ -53,6 +53,9 @@ app.use((req,res,next) => {
 app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 
+//static folder
+app.use('/public/js', express.static(__dirname + '/public/js'));
+
 server.listen(process.env.PORT || 3000);
 console.log("server running ...");
 

@@ -11,7 +11,7 @@ router.get('/dashboard',ensureAuthenticated,(req,res)=>res.render('dashboard',{
 }));
 
 //message
-router.post('/message',ensureAuthenticated,(req,res)=>{
+router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
 
     var messagedata=req.body.data;
@@ -38,7 +38,7 @@ router.post('/message',ensureAuthenticated,(req,res)=>{
 	res.send(req.body.data);
 });
 
-router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
+router.post('/getmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
 
     var messagedata=req.body.data;
@@ -53,7 +53,7 @@ router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
     request.input('input_toid', sql.NVarChar, messagedata[0].ToID);
  
         // query to the database and save the message
-        request.query("select * from tbl_message2 where MessageID = @input_messageid1 or MessageID = @input_messageid2", (err, result) => {
+        request.query("select * from tbl_message2 where MessageID = @input_messageid1 or MessageID = @input_messageid2 order by id asc", (err, result) => {
             if(err){
                 console.log(err);
                 

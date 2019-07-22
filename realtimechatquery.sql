@@ -18,6 +18,8 @@ VALUES ('hasin','12345');
 
 select * from tbl_registration;
 
-select * from tbl_message2;
+select * from tbl_message2 where MessageID='rahim_karim' or MessageID='karim_rahim' order by id asc;
 
 select * from tbl_registration where Username='boss';
+
+select * from tbl_message2;
