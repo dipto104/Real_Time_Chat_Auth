@@ -7,6 +7,7 @@ $(function () {
     var $messagearea=$('#messagearea');
     var touserid='';
     var $userid=$('#userid');
+    var $toid=$('#toid');
 
     var chatusername='';
     chatusername=$userid.text();
@@ -18,11 +19,11 @@ $(function () {
             }
         });
 
-    // send message
+    // send message using submit button
     $messageForm.submit(function(e){
         e.preventDefault();
 
-        if(touserid!=''){
+        if(touserid!=''&& chatusername!=touserid){
             var msg=$message.val();
             var touser=touserid;
             var messageid=chatusername+"_"+touserid;
@@ -51,10 +52,45 @@ $(function () {
     });
 
 
+
+    ///instead of submit button using enter to send message
+    $message.keypress(function (e) {
+        if(e.which == 13) {
+            //submit form via ajax, this is not JS but server side scripting so not showing here
+            if(touserid!=''&& chatusername!=touserid){
+                var msg=$message.val();
+                var touser=touserid;
+                var messageid=chatusername+"_"+touserid;
+                var dataoutput=[{"MessageID":messageid,"FromID":chatusername,"ToID":touser,"msg":msg}];
+    
+                if($message.val()!=''){
+                    socket.emit('send message', dataoutput);
+                }
+                $message.val('');
+    
+                
+                    
+                $.ajax({
+                    type: 'POST',
+                    data: {'data':dataoutput},
+                    ContentType: 'application/json',
+                    url: 'http://localhost:3000/sendmessage',						
+                    success: function(data) {
+                        console.log('success on post');
+                        //console.log(JSON.stringify(data));
+                    }
+                });
+            }
+            e.preventDefault();
+        }
+    });
+
+
+
     socket.on('new message',function(data){
         var tempdata=JSON.parse(JSON.stringify(data));
         if(tempdata[0].uname==chatusername){
-            $chat.append('<div class="card card-body bg-light" align="right">'+'You : '+tempdata[0].msg+'<div>');
+            $chat.append('<div class="card card-body" align="right" style="background-color:DodgerBlue;color:White;">'+'You : '+tempdata[0].msg+'<div>');
         }
         else if(tempdata[0].uname==touserid){
             $chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
@@ -88,6 +124,9 @@ $(function () {
         touserid=$(this).text();
         console.log(touserid);
 
+
+        $toid.text(touserid);
+
         var messageid1=chatusername+"_"+touserid;
         var messageid2=touserid+"_"+chatusername;
         var sendjson=[{"MessageID1":messageid1,"MessageID2":messageid2,"FromID":chatusername,"ToID":touserid}];
@@ -107,7 +146,7 @@ $(function () {
                 $chat.empty();
                 for(var i=0;i<messagehistory.length;i++){
                     if(messagehistory[i].FromID==chatusername && messagehistory[i].ToID==touserid){
-                        $chat.append('<div class="card card-body bg-light" align="right">'+'You : '+messagehistory[i].Message+'<div>');
+                        $chat.append('<div class="card card-body" align="right" style="background-color:DodgerBlue;color:White">'+'You : '+messagehistory[i].Message+'<div>');
                     }
                     else if(messagehistory[i].FromID==touserid && messagehistory[i].ToID==chatusername){
                         $chat.append('<div class="card card-body " align="left">'+messagehistory[i].FromID+' : '+messagehistory[i].Message+'<div>');
