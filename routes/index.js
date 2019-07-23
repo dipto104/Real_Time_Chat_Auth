@@ -10,7 +10,7 @@ router.get('/dashboard',ensureAuthenticated,(req,res)=>res.render('dashboard',{
     name:req.user.Username
 }));
 
-//message
+//send private message
 router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
 
@@ -37,7 +37,7 @@ router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
         });
 	res.send(req.body.data);
 });
-
+//get private message
 router.post('/getmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
 
@@ -65,4 +65,12 @@ router.post('/getmessage',ensureAuthenticated,(req,res)=>{
 
     
 });
+
+router.get('/getgroupchat',ensureAuthenticated,(req,res)=>res.render('groupmessage',{
+    name:req.user.Username
+}));
+
+router.get('/creategroup',ensureAuthenticated,(req,res)=>res.render('creategroup',{
+    name:req.user.Username
+}));
 module.exports=router;

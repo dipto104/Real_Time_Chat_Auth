@@ -13,7 +13,6 @@
     }
     a:link{
         text-decoration: none;
-        color: black;
     }
     a:hover{
          color: yellow;
@@ -30,12 +29,20 @@
     }			
 </style>
 <div id="messagearea" class="row">
-    <div class="col-sm-3 col-md-4">
+    
+    <div class="col-sm-3 col-md-3">
         <div class="card card-body bg-light">
             <h3>Online Users</h3>
             <ul class="list-group" id="users"></ul>
         </div>
         
+    </div>
+    <div class="col-sm-3 col-md-3">
+            <div class="card card-body bg-light">
+                <h3>Group Chat List</h3>
+                <ul class="list-group" ></ul>
+            </div>
+                
     </div>
     <div class="col-sm-3 col-md-4">
         <h4 id="toid" style="background-color:aqua;"></h4>
@@ -56,15 +63,14 @@
         
             <h6 class="lead mb-3" id="userid"><%= name %></h6>
             <a href="/users/logout" class="btn btn-primary" style="margin:5px;color: white;">Logout</a>
-            <br/>
-            <a href="/getgroupchat" class="btn btn-secondary" style="margin:5px;color: white;">GroupChat</a>
+            <a href="/creategroup" class="btn btn-secondary" style="margin:5px;color: white;">Create Group</a>
             
         </div>
         
 </div>
 
 
-<script src="public/js/dashboardscript.js">
+<script src="public/js/gmessagescript.js">
     
     
 </script>
