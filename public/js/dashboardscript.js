@@ -94,7 +94,8 @@ $(function () {
         }
         else if(tempdata[0].uname==touserid){
             $chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
-        }				
+        }
+        $chat.scrollTop(  $chat.prop('scrollHeight') -  $chat.outerHeight() );				
     });
 
     socket.on('get users',function(data){
@@ -152,6 +153,8 @@ $(function () {
                         $chat.append('<div class="card card-body " align="left">'+messagehistory[i].FromID+' : '+messagehistory[i].Message+'<div>');
                     }
                 }
+                //$chat.scrollTop=$chat.scrollHeight;
+                $chat.scrollTop(  $chat.prop('scrollHeight') -  $chat.outerHeight() );
                 
             }
         });

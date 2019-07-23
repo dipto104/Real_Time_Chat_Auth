@@ -1,8 +1,14 @@
 const express = require('express');
 const expressLayouts= require('express-ejs-layouts');
 const flash=require('connect-flash');
-const session=require('express-session');
 const passport=require('passport');
+
+const session = require("express-session")({
+    secret: 'secret_dipto',
+    resave: true,
+    saveUninitialized: true
+  });
+const sharedsession = require("express-socket.io-session");
 
 
 var app = express();
@@ -27,11 +33,9 @@ app.set('view engine','ejs')
 app.use(express.urlencoded({ extended:true }));
 
 //Express Session
-app.use(session({
-  secret: 'secret_dipto',
-  resave: true,
-  saveUninitialized: true
-}));
+app.use(session);
+
+
 
 //passport middleware
 
@@ -61,6 +65,8 @@ console.log("server running ...");
 
 
 
+//io session
+io.use(sharedsession(session));
 
 ///socket work for message
 
@@ -94,14 +100,18 @@ io.sockets.on('connection',function(socket){
 
 	//new user
 	socket.on('new user',function(data,callback){
-    callback(true);
-    var indexuser=users.indexOf(data);
-    if(indexuser==-1){
-      socket.username=data;
-      socket.join(socket.username);
-      users.push(socket.username);
-    }
-    Updateusername();
+		callback(true);
+		var indexuser=users.indexOf(data);
+		if(indexuser==-1){
+			socket.username=data;
+			socket.join(socket.username);
+			users.push(socket.username);
+		}
+		else{
+			socket.username=data;
+			socket.join(socket.username);
+		}
+		Updateusername();
 		
 		
 		
