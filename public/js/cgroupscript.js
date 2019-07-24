@@ -1,8 +1,5 @@
 $(function () {
     var socket =io.connect();
-    var $messageForm=$('#messageForm');
-    var $message = $('#message');
-    var $chat = $('#chat');
     var $users =$('#users');
     var $messagearea=$('#messagearea');
     var touserid='';
@@ -45,7 +42,7 @@ $(function () {
 
         touserid=$(this).text();
         var isslected=peoplearray.indexOf(touserid);
-        if(isslected==-1 && touserid!=chatusername && peoplearray.length<=3){
+        if(isslected==-1 && touserid!=chatusername && peoplearray.length<3){
             peoplearray.push(touserid);
         }
         var html='';
@@ -90,6 +87,16 @@ $(function () {
                 else if(peoplearray.length==1){
                     roomjson=[{"CreatorID":chatusername,"PartnerID1":peoplearray[0],"PartnerID2":null,"PartnerID3":null,"RoomID":RoomID}];
                 }
+                $.ajax({
+                    type: 'POST',
+                    data: {'data':roomjson},
+                    ContentType: 'application/json',
+                    url: 'http://localhost:3000/creategroup',						
+                    success: function(data) {
+                        console.log('success on post');
+                        //console.log(JSON.stringify(data));
+                    }
+                });
                 console.log("success group");
             }
             

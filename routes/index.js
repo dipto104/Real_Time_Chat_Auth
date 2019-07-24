@@ -70,7 +70,69 @@ router.get('/getgroupchat',ensureAuthenticated,(req,res)=>res.render('groupmessa
     name:req.user.Username
 }));
 
+router.post('/getgroupchat',ensureAuthenticated,(req,res)=>{
+    console.log('body: ' + JSON.stringify(req.body.data));
+
+    var messagedata=req.body.data;
+    console.log(messagedata);
+
+
+
+    const request = new sql.Request();
+    request.input('input_userid', sql.NVarChar, messagedata);
+ 
+        // query to the database and save the message
+        request.query("select * from tbl_group where UserID = @input_userid order by ID asc", (err, result) => {
+            if(err){
+                console.log(err);
+                
+              }
+            else{
+               res.send(result.recordset);
+            } 
+        });
+	
+});
+
 router.get('/creategroup',ensureAuthenticated,(req,res)=>res.render('creategroup',{
     name:req.user.Username
 }));
+
+router.post('/creategroup',ensureAuthenticated,(req,res)=>{
+
+    var roomdata=req.body.data;
+    console.log(roomdata[0]);
+
+    const request = new sql.Request();
+    request.input('input_creatorid', sql.NVarChar, roomdata[0].CreatorID);
+    request.input('input_partnerid1', sql.NVarChar, roomdata[0].PartnerID1);
+    request.input('input_partnerid2', sql.NVarChar, roomdata[0].PartnerID2);
+    request.input('input_partnerid3', sql.NVarChar, roomdata[0].PartnerID3);
+    request.input('input_roomid', sql.NVarChar, roomdata[0].RoomID);
+
+
+    request.query("insert into tbl_room (RoomID,CreatorID,PartnerID1,PartnerID2,PartnerID3) values (@input_roomid,@input_creatorid,@input_partnerid1,@input_partnerid2,@input_partnerid3)", (err, result) => {
+        if(err){
+            console.log(err);
+            
+          }
+        else{
+           console.log("room id is stored");
+            request.query("insert into tbl_group (RoomID,UserID) values (@input_roomid,@input_creatorid),(@input_roomid,@input_partnerid1),(@input_roomid,@input_partnerid2),(@input_roomid,@input_partnerid3)", (err, result) => {
+                if(err){
+                    console.log(err);
+                    res.render('groupmessage',{name:req.user.Username})
+                    
+                }
+                else{
+                console.log("room id is stored");
+                res.render('groupmessage',{name:req.user.Username})
+                } 
+            });
+        } 
+    });
+
+
+    
+});
 module.exports=router;

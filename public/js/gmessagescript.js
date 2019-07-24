@@ -8,6 +8,7 @@ $(function () {
     var touserid='';
     var $userid=$('#userid');
     var $toid=$('#toid');
+    var $grouplist=$('#grouplist');
 
     var chatusername='';
     chatusername=$userid.text();
@@ -161,6 +162,30 @@ $(function () {
 
         
         
+    });
+
+
+
+
+
+
+    //get groupchat populated on list
+
+    $.ajax({
+        type: 'POST',
+        data: {'data':chatusername},
+        ContentType: 'application/json',
+        url: 'http://localhost:3000/getgroupchat',						
+        success: function(data) {
+            console.log('success on post');
+            var grouphistory=data;
+            var html='';
+            for(var i=0;i<grouphistory.length;i++){
+                html+='<li class="list-group-item" id="'+i+'"><a href="#">'+grouphistory[i].RoomID+'</a></li>';
+            }
+            $grouplist.html(html);
+            //console.log(JSON.stringify(data));
+        }
     });
     
 
