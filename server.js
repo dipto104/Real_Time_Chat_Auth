@@ -98,6 +98,19 @@ io.sockets.on('connection',function(socket){
 		//io.sockets.emit('new message',dataoutput);//prev working emit
 	});
 
+	//send group message
+	socket.on('send groupmessage',function(data){
+		//console.log(data);
+		var tempdata=JSON.parse(JSON.stringify(data));
+		var msg=tempdata[0].msg;
+		var uname=tempdata[0].FromID;
+		var dataoutput=[{"uname":uname,"msg":msg}] ;
+
+		io.to(tempdata[0].RoomID).emit('new groupmessage',dataoutput);
+		
+		//io.sockets.emit('new message',dataoutput);//prev working emit
+	});
+
 	//new user
 	socket.on('new user',function(data,callback){
 		callback(true);
@@ -115,6 +128,13 @@ io.sockets.on('connection',function(socket){
 		
 		
 		
+	});
+
+	socket.on('new groupuser',function(data,callback){
+		callback(true);
+			socket.username=data;
+			socket.join(socket.username);	
+			console.log("hey");
 	});
 
 	function Updateusername(){

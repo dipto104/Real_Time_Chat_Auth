@@ -37,6 +37,60 @@ router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
         });
 	res.send(req.body.data);
 });
+
+//send group message
+router.post('/sendgroupmessage',ensureAuthenticated,(req,res)=>{
+    console.log('body: ' + JSON.stringify(req.body.data));
+
+    var messagedata=req.body.data;
+    console.log(messagedata[0].RoomID);
+
+
+
+    const request = new sql.Request();
+    request.input('input_roomid', sql.NVarChar, messagedata[0].RoomID);
+    request.input('input_fromid', sql.NVarChar, messagedata[0].FromID);
+    request.input('input_message', sql.NVarChar, messagedata[0].msg);
+ 
+        // query to the database and save the message
+        request.query("insert into tbl_groupmessage (RoomID,FromID,Message) values (@input_roomid,@input_fromid,@input_message)", (err, result) => {
+            if(err){
+                console.log(err);
+                
+              }
+            else{
+               console.log("message stored");
+            } 
+        });
+	res.send(req.body.data);
+});
+//get group message
+router.post('/getgroupmessage',ensureAuthenticated,(req,res)=>{
+    console.log('body: ' + JSON.stringify(req.body.data));
+
+    var messagedata=req.body.data;
+   
+
+
+
+    const request = new sql.Request();
+    request.input('input_roomid', sql.NVarChar, messagedata[0].RoomID);
+ 
+        // query to the database and save the message
+        request.query("select * from tbl_groupmessage where RoomID = @input_roomid  order by id asc", (err, result) => {
+            if(err){
+                console.log(err);
+                
+              }
+            else{
+                res.send(result.recordset);
+            } 
+        });
+
+    
+});
+
+
 //get private message
 router.post('/getmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));

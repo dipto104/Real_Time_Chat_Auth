@@ -10,6 +10,8 @@ $(function () {
     var $toid=$('#toid');
     var $grouplist=$('#grouplist');
 
+    var groupid='';
+
     var chatusername='';
     chatusername=$userid.text();
 
@@ -24,14 +26,12 @@ $(function () {
     $messageForm.submit(function(e){
         e.preventDefault();
         var testifspace=$message.val();
-        if(touserid!=''&& chatusername!=touserid && testifspace.replace(/\s/g, '').length){
+        if(groupid!='' && testifspace.replace(/\s/g, '').length){
             var msg=$message.val();
-            var touser=touserid;
-            var messageid=chatusername+"_"+touserid;
-            var dataoutput=[{"MessageID":messageid,"FromID":chatusername,"ToID":touser,"msg":msg}];
+            var dataoutput=[{"RoomID":groupid,"FromID":chatusername,"msg":msg}];
 
             if($message.val()!=''){
-                socket.emit('send message', dataoutput);
+                socket.emit('send groupmessage', dataoutput);
             }
             $message.val('');
 
@@ -41,7 +41,7 @@ $(function () {
                 type: 'POST',
                 data: {'data':dataoutput},
                 ContentType: 'application/json',
-                url: 'http://localhost:3000/sendmessage',						
+                url: 'http://localhost:3000/sendgroupmessage',						
                 success: function(data) {
                     console.log('success on post');
                     //console.log(JSON.stringify(data));
@@ -88,12 +88,23 @@ $(function () {
 
 
 
-    socket.on('new message',function(data){
+    /*socket.on('new message',function(data){
         var tempdata=JSON.parse(JSON.stringify(data));
         if(tempdata[0].uname==chatusername){
             $chat.append('<div class="card card-body" align="right" style="background-color:DodgerBlue;color:White;">'+'You : '+tempdata[0].msg+'<div>');
         }
         else if(tempdata[0].uname==touserid){
+            $chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
+        }
+        $chat.scrollTop(  $chat.prop('scrollHeight') -  $chat.outerHeight() );				
+    });*/
+
+    socket.on('new groupmessage',function(data){
+        var tempdata=JSON.parse(JSON.stringify(data));
+        if(tempdata[0].uname==chatusername){
+            $chat.append('<div class="card card-body" align="right" style="background-color:DodgerBlue;color:White;">'+'You : '+tempdata[0].msg+'<div>');
+        }
+        else{
             $chat.append('<div class="card card-body " align="left">'+tempdata[0].uname+' : '+tempdata[0].msg+'<div>');
         }
         $chat.scrollTop(  $chat.prop('scrollHeight') -  $chat.outerHeight() );				
@@ -187,7 +198,58 @@ $(function () {
             //console.log(JSON.stringify(data));
         }
     });
-    
+
+
+    $grouplist.on("click",".list-group-item",function(e){
+        e.preventDefault();
+        //console.log($(this).text());
+        //console.log(e.target.id);
+
+        groupid=$(this).text();
+        console.log(groupid);
+
+
+        $toid.text(touserid);
+
+        socket.emit('new groupuser', groupid,function(data){
+            if(data){
+                $messagearea.show();
+            }
+        });
+
+        var roomid=groupid;
+        var sendjson=[{"RoomID":groupid}];
+        var groupmessagehistory="";
+
+        $.ajax({
+            type: 'POST',
+            data:{'data':sendjson},
+            ContentType: 'application/json',
+            url: 'http://localhost:3000/getgroupmessage',						
+            success: function(data) {
+                console.log('success on get');
+                //console.log(JSON.stringify(data));
+                groupmessagehistory=data;
+                console.log(groupmessagehistory.length);
+                var html='';
+                $chat.empty();
+                for(var i=0;i<groupmessagehistory.length;i++){
+                    if(groupmessagehistory[i].FromID==chatusername){
+                        $chat.append('<div class="card card-body" align="right" style="background-color:DodgerBlue;color:White">'+'You : '+groupmessagehistory[i].Message+'<div>');
+                    }
+                    else {
+                        $chat.append('<div class="card card-body " align="left">'+groupmessagehistory[i].FromID+' : '+groupmessagehistory[i].Message+'<div>');
+                    }
+                }
+                //$chat.scrollTop=$chat.scrollHeight;
+                $chat.scrollTop(  $chat.prop('scrollHeight') -  $chat.outerHeight() );
+                
+            }
+        });
+
+       
+
+    });
 
     
 
