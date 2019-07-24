@@ -9,6 +9,11 @@ $(function () {
     var $userid=$('#userid');
     var $toid=$('#toid');
     var $plist=$('#plist');
+    var $clear=$('#clear');
+    var $createroom=$('#createroom');
+    var $roomid=$('#roomid');
+    var $roomempty=$('#room_empty_alert');
+    var $peopleempty=$('#people_empty_alert');
 
     var chatusername='';
     chatusername=$userid.text();
@@ -40,7 +45,7 @@ $(function () {
 
         touserid=$(this).text();
         var isslected=peoplearray.indexOf(touserid);
-        if(isslected==-1){
+        if(isslected==-1 && touserid!=chatusername && peoplearray.length<=3){
             peoplearray.push(touserid);
         }
         var html='';
@@ -49,9 +54,46 @@ $(function () {
         }
         //console.log(data);
         $plist.html(html);
-        console.log(touserid);  
         
     });
+    $clear.click(function(){
+        peoplearray.splice(peoplearray.length-1,1);
+
+        var html='';
+        for(var i=0;i<peoplearray.length;i++){
+            html+='<li class="list-group-item" id="'+i+'">'+peoplearray[i]+'</li>';
+        }
+        //console.log(data);
+        $plist.html(html);
+      });
+
+      $createroom.click(function(){
+        $roomempty.hide();
+        $peopleempty.hide();
+        var flag1=0,flag2=0;
+            var roomjson=[];
+            var RoomID=$roomid.val();
+            if(RoomID=='' ||!RoomID.replace(/\s/g, '').length){
+                $roomempty.show();
+                flag1=1;
+            }if(peoplearray.length==0){
+                $peopleempty.show();
+                flag2=1;
+            }
+            if(flag1==0 && flag2==0){
+                if(peoplearray.length==3){
+                    roomjson=[{"CreatorID":chatusername,"PartnerID1":peoplearray[0],"PartnerID2":peoplearray[1],"PartnerID3":peoplearray[2],"RoomID":RoomID}];
+                }
+                else if(peoplearray.length==2){
+                    roomjson=[{"CreatorID":chatusername,"PartnerID1":peoplearray[0],"PartnerID2":peoplearray[1],"PartnerID3":null,"RoomID":RoomID}];
+                }
+                else if(peoplearray.length==1){
+                    roomjson=[{"CreatorID":chatusername,"PartnerID1":peoplearray[0],"PartnerID2":null,"PartnerID3":null,"RoomID":RoomID}];
+                }
+                console.log("success group");
+            }
+            
+      });
     
 
     
