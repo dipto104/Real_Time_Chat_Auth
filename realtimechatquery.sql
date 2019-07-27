@@ -47,3 +47,9 @@ select * from tbl_message2 where MessageID='rahim_karim' or MessageID='karim_rah
 select * from tbl_registration where Username='boss';
 
 select * from tbl_message2;
+
+select * from tbl_room;
+
+select * from tbl_group;
+
+select * from tbl_groupmessage;

@@ -41,7 +41,7 @@ $(function () {
                 type: 'POST',
                 data: {'data':dataoutput},
                 ContentType: 'application/json',
-                url: 'http://localhost:3000/sendgroupmessage',						
+                url: '/sendgroupmessage',						
                 success: function(data) {
                     console.log('success on post');
                     //console.log(JSON.stringify(data));
@@ -57,15 +57,13 @@ $(function () {
     ///instead of submit button using enter to send message
     $message.keypress(function (e) {
         if(e.which == 13) {
-                var testifspace=$message.val();
-            if(touserid!=''&& chatusername!=touserid && testifspace.replace(/\s/g, '').length){
+            var testifspace=$message.val();
+            if(groupid!='' && testifspace.replace(/\s/g, '').length){
                 var msg=$message.val();
-                var touser=touserid;
-                var messageid=chatusername+"_"+touserid;
-                var dataoutput=[{"MessageID":messageid,"FromID":chatusername,"ToID":touser,"msg":msg}];
+                var dataoutput=[{"RoomID":groupid,"FromID":chatusername,"msg":msg}];
     
                 if($message.val()!=''){
-                    socket.emit('send message', dataoutput);
+                    socket.emit('send groupmessage', dataoutput);
                 }
                 $message.val('');
     
@@ -75,7 +73,7 @@ $(function () {
                     type: 'POST',
                     data: {'data':dataoutput},
                     ContentType: 'application/json',
-                    url: 'http://localhost:3000/sendmessage',						
+                    url: '/sendgroupmessage',						
                     success: function(data) {
                         console.log('success on post');
                         //console.log(JSON.stringify(data));
@@ -149,7 +147,7 @@ $(function () {
             type: 'POST',
             data:{'data':sendjson},
             ContentType: 'application/json',
-            url: 'http://localhost:3000/getmessage',						
+            url: '/getmessage',						
             success: function(data) {
                 console.log('success on get');
                 //console.log(JSON.stringify(data));
@@ -186,7 +184,7 @@ $(function () {
         type: 'POST',
         data: {'data':chatusername},
         ContentType: 'application/json',
-        url: 'http://localhost:3000/getgroupchat',						
+        url: '/getgroupchat',						
         success: function(data) {
             console.log('success on post');
             var grouphistory=data;
@@ -225,7 +223,7 @@ $(function () {
             type: 'POST',
             data:{'data':sendjson},
             ContentType: 'application/json',
-            url: 'http://localhost:3000/getgroupmessage',						
+            url: '/getgroupmessage',						
             success: function(data) {
                 console.log('success on get');
                 //console.log(JSON.stringify(data));

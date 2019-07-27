@@ -11,6 +11,8 @@ $(function () {
     var $roomid=$('#roomid');
     var $roomempty=$('#room_empty_alert');
     var $peopleempty=$('#people_empty_alert');
+    var $roomavail=$('#roomavail');
+    var $roomnotavail=$('#roomnotavail');
 
     var chatusername='';
     chatusername=$userid.text();
@@ -64,6 +66,41 @@ $(function () {
         $plist.html(html);
       });
 
+      $roomid.keyup(function (e) {
+        
+        
+        var roomidval=$roomid.val();
+        $.ajax({
+            type: 'POST',
+            data: {'data':roomidval},
+            ContentType: 'application/json',
+            url: '/roomidvalidation',						
+            success: function(data) {
+                if(!roomidval.replace(/\s/g, '').length){
+                    $roomempty.show();
+                    $roomavail.hide();
+                    $roomnotavail.hide();
+                }
+                else if(data==true){
+                    console.log('available');
+                    $roomavail.show();
+                    $roomnotavail.hide();
+                    $roomempty.hide();
+                }
+                
+                else if(data==false){
+                    $roomavail.hide();
+                    $roomnotavail.show();
+                    $roomempty.hide();
+                }
+                
+               
+                //console.log(JSON.stringify(data));
+            }
+        });
+
+      });
+
       $createroom.click(function(){
         $roomempty.hide();
         $peopleempty.hide();
@@ -91,14 +128,17 @@ $(function () {
                     type: 'POST',
                     data: {'data':roomjson},
                     ContentType: 'application/json',
-                    url: 'http://localhost:3000/creategroup',						
+                    url: '/creategroup',						
                     success: function(data) {
                         console.log('success on post');
+                        var url = "/getgroupchat";    
+                        $(location).attr('href',url);
                         //console.log(JSON.stringify(data));
                     }
                 });
                 console.log("success group");
             }
+            
             
       });
     

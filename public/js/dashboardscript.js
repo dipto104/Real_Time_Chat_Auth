@@ -40,7 +40,7 @@ $(function () {
                 type: 'POST',
                 data: {'data':dataoutput},
                 ContentType: 'application/json',
-                url: 'http://localhost:3000/sendmessage',						
+                url: '/sendmessage',						
                 success: function(data) {
                     console.log('success on post');
                     //console.log(JSON.stringify(data));
@@ -74,7 +74,7 @@ $(function () {
                     type: 'POST',
                     data: {'data':dataoutput},
                     ContentType: 'application/json',
-                    url: 'http://localhost:3000/sendmessage',						
+                    url: '/sendmessage',						
                     success: function(data) {
                         console.log('success on post');
                         //console.log(JSON.stringify(data));
@@ -137,7 +137,7 @@ $(function () {
             type: 'POST',
             data:{'data':sendjson},
             ContentType: 'application/json',
-            url: 'http://localhost:3000/getmessage',						
+            url: '/getmessage',						
             success: function(data) {
                 console.log('success on get');
                 //console.log(JSON.stringify(data));

@@ -2,6 +2,30 @@ const express = require('express');
 const router = express.Router();
 const {ensureAuthenticated} =require('../config/auth');
 var sql=require('../config/configdb');
+var currentrooms=[];
+
+
+var geteroom=function(){
+    const roomrequest = new sql.Request();
+
+    roomrequest.query("select RoomID from tbl_room ", (err, result) => {
+        if(err){
+            console.log(err);
+            
+          }
+          else{
+              console.log(result.recordset)
+              for(var i=0;i<result.recordset.length;i++){
+                    currentrooms.push(result.recordset[i].RoomID);
+              }
+          }
+    });
+}
+
+
+
+
+
 
 router.get('/',(req,res)=>res.render('welcome'));
 
@@ -9,6 +33,9 @@ router.get('/',(req,res)=>res.render('welcome'));
 router.get('/dashboard',ensureAuthenticated,(req,res)=>res.render('dashboard',{
     name:req.user.Username
 }));
+
+
+
 
 //send private message
 router.post('/sendmessage',ensureAuthenticated,(req,res)=>{
@@ -91,6 +118,22 @@ router.post('/getgroupmessage',ensureAuthenticated,(req,res)=>{
 });
 
 
+//room validation
+
+router.post('/roomidvalidation',ensureAuthenticated,(req,res)=>{
+    var roomdata=req.body.data;
+    console.log(roomdata);
+    var roomindex=currentrooms.indexOf(roomdata);
+    if(roomindex==-1){
+        res.send(true);
+    }
+    else{
+        res.send(false);
+    }
+    
+});
+
+
 //get private message
 router.post('/getmessage',ensureAuthenticated,(req,res)=>{
     console.log('body: ' + JSON.stringify(req.body.data));
@@ -148,9 +191,11 @@ router.post('/getgroupchat',ensureAuthenticated,(req,res)=>{
 	
 });
 
-router.get('/creategroup',ensureAuthenticated,(req,res)=>res.render('creategroup',{
-    name:req.user.Username
-}));
+router.get('/creategroup',ensureAuthenticated,(req,res)=>{
+    res.render('creategroup',{name:req.user.Username});
+    geteroom();
+
+});
 
 router.post('/creategroup',ensureAuthenticated,(req,res)=>{
 
@@ -189,4 +234,8 @@ router.post('/creategroup',ensureAuthenticated,(req,res)=>{
 
     
 });
+
+
+
+
 module.exports=router;
